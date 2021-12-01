@@ -1,77 +1,162 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-container fill-height>
+    <v-row>
+      <v-col>
+        <v-card width="100%" class="mx-auto">
+          <v-card-title>
+            <small class="headline">卡牌库</small>
+            <v-spacer></v-spacer>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="搜索"
+              single-line
+              hide-details
+            ></v-text-field>
+            <v-spacer></v-spacer>
+            <v-btn icon @click.native="createDialog.visiable = true">
+              <v-icon large>mdi-plus</v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <v-layout wrap justify-space-between>
+            <v-row>
+              <v-col
+                v-for="(card, index) in cards"
+                :key="index"
+                cols="12"
+                lg="2"
+                md="4"
+                sm="6"
+              >
+                <v-card outlined class="pa-2" min-height="300px">
+                  <v-card-title class="align:center">
+                    {{ card.name }}
+                  </v-card-title>
+                  <v-card-text>
+                    <p>
+                      {{ card.content }}
+                    </p>
+                  </v-card-text>
+                  <v-card-text>
+                    <v-progress-linear
+                      color="light-blue"
+                      height="15"
+                      :value="card.life"
+                      rounded
+                    >
+                      <template #default="{ value }">
+                        <strong>{{ value }}/100</strong>
+                      </template>
+                    </v-progress-linear>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn text color="primary">
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="error">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-layout>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <v-dialog v-model="createDialog.visiable" width="auto" persistent>
+          <v-card>
+            <v-card-title>
+              <span class="headline">新建卡牌</span>
+            </v-card-title>
+            <v-card-text>
+              <v-text-field
+                v-model="createDialog.name"
+                label="卡牌名称"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="createDialog.content"
+                label="content"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="createDialog.image"
+                label="卡牌图片"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="createDialog.life"
+                label="life"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="createDialog.cost"
+                label="cost"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="createDialog.attack"
+                label="attack"
+                required
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="createDialog.visiable = false"
+              >
+                取消
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="createDialog.visiable = false"
+              >
+                创建
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
+<script>
+export default {
+  async asyncData({ $content, params }) {
+    const cards = await $content("cards").fetch();
+    console.log(cards);
+    return {
+      cards,
+    };
+  },
+  data() {
+    return {
+      search: "",
+      createDialog: {
+        visiable: false,
+        name: "",
+        description: "",
+        image: "",
+      },
+    };
+  },
+  methods: {
+    showCreateDialog() {
+      this.createDialog.visiable = true;
+    },
+  },
+};
+</script>
+
+<style>
+</style>

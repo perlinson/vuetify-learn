@@ -1,0 +1,24 @@
+[
+  {
+    "name": "励志的演说家",
+    "cardType": "CHARACTER",
+    "cost": 2,
+    "content": "",
+    "attack": 1,
+    "life": 2,
+    "attackBase": 1,
+    "lifeBase": 2,
+    "type": [""]
+  },
+  {
+    "name": "激情的演说家",
+    "cardType": "CHARACTER",
+    "cost": 2,
+    "content": "",
+    "attack": 1,
+    "life": 2,
+    "attackBase": 1,
+    "lifeBase": 2,
+    "type": [""]
+  }
+]
